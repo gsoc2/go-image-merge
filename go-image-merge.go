@@ -38,6 +38,7 @@ type MergeImage struct {
 	Grids           []*Grid
 	ImageCountDX    int
 	ImageCountDY    int
+	BackgroundColor color.Color
 	BaseDir         string
 	FixedGridSizeX  int
 	FixedGridSizeY  int
@@ -164,6 +165,14 @@ func (m *MergeImage) mergeGrids(images []image.Image) (*image.RGBA, error) {
 	canvasMaxPoint := image.Point{canvasBoundX, canvasBoundY}
 	canvasRect := image.Rectangle{image.Point{0, 0}, canvasMaxPoint}
 	canvas = image.NewRGBA(canvasRect)
+
+	if m.BackgroundColor != nil {
+		for x := 0; x < canvasBoundX; x++ {
+			for y := 0; y < canvasBoundX; y++ {
+				canvas.Set(x, y, m.BackgroundColor)
+			}
+		}
+	}
 
 	// draw grids one by one
 	for i, grid := range m.Grids {
